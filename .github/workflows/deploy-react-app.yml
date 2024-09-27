@@ -1,4 +1,4 @@
-name: Deploy to S3
+name: Deploy React App to S3
 
 on:
   workflow_call:
@@ -8,12 +8,11 @@ on:
         type: string
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Deploy to s3
         env:
