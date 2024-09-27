@@ -1,32 +1,23 @@
-name: Deploy React App to S3
+name: Deploy to S3
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      s3_bucket:
+        required: true
+        type: string
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./workdir
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - run: npm ci
-
-      - run: npm run build
-
-      - name: Deploy to S3 with Debug
+      - name: Deploy to s3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-            aws s3 sync ./build s3://react-app-bucket-test --delete --debug --region us-west-2
-
+          aws s3 sync ./build s3://${{ inputs.s3_bucket }} --delete --region us-west-2
