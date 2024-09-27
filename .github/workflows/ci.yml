@@ -3,15 +3,14 @@ name: Build and Deploy React App
 on:
   workflow_call:
     inputs:
-      aws-access-key-id:
-        required: true
-        type: string
-      aws-secret-access-key:
-        required: true
-        type: string
       s3-bucket-name:
         required: true
         type: string
+    secrets:
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
 
 jobs:
   build-and-deploy:
@@ -35,8 +34,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ inputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: us-west-2
 
       - name: Deploy to s3
