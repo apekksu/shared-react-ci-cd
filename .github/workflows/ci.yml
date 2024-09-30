@@ -35,9 +35,9 @@ jobs:
         id: homepage-check
         run: |
           if grep -q '"homepage":' package.json; then
-            echo "::set-output name=homepage_exists::true"
+            echo "homepage_exists=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=homepage_exists::false"
+            echo "homepage_exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Add homepage into package.json
