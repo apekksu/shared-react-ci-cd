@@ -58,3 +58,7 @@ jobs:
       - name: Deploy to s3
         run: |
           aws s3 sync build/ s3://${{ inputs.s3-bucket-name }}/${{ inputs.app-directory }}/ --delete
+
+      - name: Provide App URL
+        run: |
+          echo "App URL: http://${{ inputs.s3-bucket-name }}.s3-website-us-west-2.amazonaws.com/${{ inputs.app-directory }}/"
