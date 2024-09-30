@@ -39,6 +39,8 @@ The app will automatically be deployed to a subdirectory named after the Github 
 
 ### `Get the public URL to deployed app`
 After each deployment, the pipeline will automatically print the public URL in job **Provide App URL**
+![](./assets/app-url.png)
+
 
 ### `FAQ`
 **Q**: What if I want to add the homepage field manually?
