@@ -19,7 +19,7 @@ jobs:
     uses: apekksu/shared-react-ci-cd/.github/workflows/ci.yml@main
     with:
       s3-bucket-name: react-app-bucket-test # change to different bucket if needed
-      app-directory: ${{ github.event.repository.name }}  # repository name used as subdirectory in bucket root
+      app-directory: ${{ github.event.repository.name }} # repo name used as subdir in bucket root
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
