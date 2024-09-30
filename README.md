@@ -14,14 +14,11 @@ on:
     branches:
       - main
 
-env:
-  S3_BUCKET_NAME: react-app-bucket-test  # change to the different one if needed
-
 jobs:
   deploy:
     uses: apekksu/shared-react-ci-cd/.github/workflows/ci.yml@main
     with:
-      s3-bucket-name: ${{ env.S3_BUCKET_NAME }}
+      s3-bucket-name: react-app-bucket-test # change to different bucket if needed
       app-directory: ${{ github.event.repository.name }}  # repository name used as subdirectory in bucket root
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -45,4 +42,5 @@ After each deployment, the pipeline will automatically print the public URL in j
 
 ### `FAQ`
 **Q**: What if I want to add the homepage field manually?
+
 **A**: The pipeline checks whether the homepage field already exists in **package.json**. If it's there, the pipeline won’t modify it. If it's missing, the pipeline will inject the correct homepage based on the S3 bucket and directory.
