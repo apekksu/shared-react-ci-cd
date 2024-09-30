@@ -43,4 +43,4 @@ jobs:
 
       - name: Deploy to s3
         run: |
-          aws s3 sync build/ s3://${{ inputs.s3-bucket-name }}/${{ inputs.app-directory }}/ --delete --debug
+          aws s3 sync build/ s3://${{ inputs.s3-bucket-name }}/${{ inputs.app-directory }}/ --delete
