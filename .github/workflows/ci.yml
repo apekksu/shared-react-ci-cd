@@ -31,9 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: add homepage into package.json
+      - name: Check homepage
+        id: homepage-check
         run: |
-          sed -i "s|\"homepage\":.*|\"homepage\": \"http://${{ inputs.s3-bucket-name }}.s3-website-us-west-2.amazonaws.com/${{ inputs.app-directory }}\",|" package.json || echo 'No homepage field found, adding...'
+          if grep -q '"homepage":' package.json; then
+            echo "::set-output name=homepage_exists::true"
+          else
+            echo "::set-output name=homepage_exists::false"
+          fi
+
+      - name: Add homepage into package.json
+        if: steps.homepage-check.outputs.homepage_exists == 'false'
+        run: |
           sed -i "/\"private\": true/a\  \"homepage\": \"http://${{ inputs.s3-bucket-name }}.s3-website-us-west-2.amazonaws.com/${{ inputs.app-directory }}\"," package.json
 
       - name: Build react app
