@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: add homepage into package.json
+        run: |
+          sed -i "s|\"homepage\":.*|\"homepage\": \"http://${{ inputs.s3-bucket-name }}.s3-website-us-west-2.amazonaws.com/${{ inputs.app-directory }}\",|" package.json || echo 'No homepage field found, adding...'
+          sed -i "/\"private\": true/a\  \"homepage\": \"http://${{ inputs.s3-bucket-name }}.s3-website-us-west-2.amazonaws.com/${{ inputs.app-directory }}\"," package.json
+
       - name: Build react app
         run: npm run build
 
