@@ -6,6 +6,9 @@ on:
       s3-bucket-name:
         required: true
         type: string
+      app-directory:
+        required: false
+        type: string
     secrets:
       aws-access-key-id:
         required: true
@@ -39,4 +42,5 @@ jobs:
           aws-region: us-west-2
 
       - name: Deploy to s3
-        run: aws s3 sync build/ s3://${{ inputs.s3-bucket-name }} --delete --debug
+        run: |
+          aws s3 sync build/ s3://${{ inputs.s3-bucket-name }}/${{ inputs.app-directory }}/ --delete --debug
