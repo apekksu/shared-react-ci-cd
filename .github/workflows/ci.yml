@@ -22,6 +22,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: list public directory
+        run: |
+          echo "Listing contents of the public directory"
+          ls -alh public/
 
       - name: Setup Node.js env
         uses: actions/setup-node@v4
