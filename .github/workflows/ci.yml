@@ -48,6 +48,13 @@ jobs:
       - name: Build react app
         run: npm run build
 
+      - name: list build directory
+        run: |
+          echo "listing contents of the build directory..."
+          ls -alh build/
+          ls -alh build/public/
+
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
