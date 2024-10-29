@@ -29,12 +29,12 @@ jobs:
         with:
           lfs: true
 
-      - name: list public directory
+      - name: List public directory
         run: |
           echo "Listing contents of the public directory"
           ls -alh public/
 
-      - name: Setup Node.js env
+      - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check homepage
+      - name: Check for existing homepage
         id: homepage-check
         run: |
           if grep -q '"homepage":' package.json; then
@@ -51,17 +51,19 @@ jobs:
             echo "homepage_exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Add homepage into package.json
+      - name: Add homepage to package.json
         if: steps.homepage-check.outputs.homepage_exists == 'false'
         run: |
-          sed -i "/\"private\": true/a\  \"homepage\": \"http://${{ inputs.s3-bucket-name }}.s3-website-${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}\"," package.json
+          HOMEPAGE_URL="http://${{ inputs.s3-bucket-name }}.s3-website.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}/"
+          echo "Inserting homepage URL: $HOMEPAGE_URL into package.json"
+          sed -i "/\"private\": true/a\  \"homepage\": \"$HOMEPAGE_URL\"," package.json
         
-      - name: Build react app
+      - name: Build React app
         run: npm run build
 
-      - name: list build directory
+      - name: List build directory
         run: |
-          echo "listing contents of the build directory..."
+          echo "Listing contents of the build directory..."
           ls -alh build/
 
       - name: Configure AWS credentials
@@ -71,11 +73,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
 
-      - name: Deploy to s3
+      - name: Deploy to S3
         run: |
           aws s3 sync build/ s3://${{ inputs.s3-bucket-name }}/${{ inputs.app-directory }}/ --delete
 
       - name: Provide App URL
         run: |
-          echo "App URL: http://${{ inputs.s3-bucket-name }}.s3-website-${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}/"
-        
+          APP_URL="http://${{ inputs.s3-bucket-name }}.s3-website.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}/"
+          echo "App URL: $APP_URL"
+          echo "app_url=$APP_URL" >> $GITHUB_ENV
