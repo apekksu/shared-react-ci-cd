@@ -7,22 +7,39 @@ To set up your repository to use this shared CI/CD pipeline, follow these steps:
 In your repository, create a workflow file **deploy.yml** at **.github/workflows/**. This file will trigger the shared pipeline to build and deploy your React app. Here is an example:
 
 ```yaml
-name: Deploy React App
+name: Deploy React app
 
 on:
   push:
     branches:
       - main
+      - prod
 
 jobs:
-  deploy:
-    uses: apekksu/shared-react-ci-cd/.github/workflows/ci.yml@main
-    with:
-      s3-bucket-name: react-app-bucket-test # change to different bucket if needed
-      app-directory: ${{ github.event.repository.name }} # repo name used as subdir in bucket root
-    secrets:
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  set-params-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check branch and set inputs
+        id: set-vars
+        run: |
+          if [ "${{ github.ref_name }}" = "prod" ]; then
+            echo "s3_bucket=apekksu-react-prod-euc1" >> $GITHUB_OUTPUT
+            echo "app_directory=${{ github.event.repository.name }}/prod" >> $GITHUB_OUTPUT
+          else
+            echo "s3_bucket=apekksu-react-euc1" >> $GITHUB_OUTPUT
+            echo "app_directory=${{ github.event.repository.name }}/dev" >> $GITHUB_OUTPUT
+
+      - name: Call shared pipeline
+        uses: apekksu/shared-react-ci-cd/.github/workflows/ci.yml@main
+        with:
+          s3-bucket-name: ${{ steps.set-vars.outputs.s3_bucket }}
+          app-directory: ${{ steps.set-vars.outputs.app_directory }}
+          aws-region: eu-central-1
+        secrets:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
 ```
 
 ### `Using organizaion level secrets`
