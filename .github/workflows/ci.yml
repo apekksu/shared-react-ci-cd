@@ -42,21 +42,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check for existing homepage
-        id: homepage-check
-        run: |
-          if grep -q '"homepage":' package.json; then
-            echo "homepage_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "homepage_exists=false" >> $GITHUB_OUTPUT
-          fi
+      # - name: Check for existing homepage
+      #   id: homepage-check
+      #   run: |
+      #     if grep -q '"homepage":' package.json; then
+      #       echo "homepage_exists=true" >> $GITHUB_OUTPUT
+      #     else
+      #       echo "homepage_exists=false" >> $GITHUB_OUTPUT
+      #     fi
 
-      - name: Add homepage to package.json
-        if: steps.homepage-check.outputs.homepage_exists == 'false'
-        run: |
-          HOMEPAGE_URL="http://${{ inputs.s3-bucket-name }}.s3-website.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}/"
-          echo "Inserting homepage URL: $HOMEPAGE_URL into package.json"
-          sed -i "/\"private\": true/a\  \"homepage\": \"$HOMEPAGE_URL\"," package.json
+      # - name: Add homepage to package.json
+      #   if: steps.homepage-check.outputs.homepage_exists == 'false'
+      #   run: |
+      #     HOMEPAGE_URL="http://${{ inputs.s3-bucket-name }}.s3-website.${{ inputs.aws-region }}.amazonaws.com/${{ inputs.app-directory }}/"
+      #     echo "Inserting homepage URL: $HOMEPAGE_URL into package.json"
+      #     sed -i "/\"private\": true/a\  \"homepage\": \"$HOMEPAGE_URL\"," package.json
         
       - name: Build React app
         run: npm run build
