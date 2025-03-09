@@ -29,10 +29,10 @@ jobs:
         with:
           lfs: true
 
-      - name: List public directory
-        run: |
-          echo "Listing contents of the public directory"
-          ls -alh public/
+      # - name: List public directory
+      #   run: |
+      #     echo "Listing contents of the public directory"
+      #     ls -alh public/
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
